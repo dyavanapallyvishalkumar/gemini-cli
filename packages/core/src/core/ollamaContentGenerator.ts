@@ -180,6 +180,9 @@ export class OllamaContentGenerator implements ContentGenerator {
       } catch (error) {
         if (isToolsNotSupportedError(error) && this.toolsSupported) {
           // Model doesn't support tools — remember and retry without them
+          console.warn(
+            `[OllamaContentGenerator] Model ${this.model} does not support tools. Falling back to text-only mode.`,
+          );
           this.toolsSupported = false;
           response = await this.ollama.chat({
             model: this.model,
@@ -257,6 +260,9 @@ export class OllamaContentGenerator implements ContentGenerator {
         } catch (error) {
           if (isToolsNotSupportedError(error) && self.toolsSupported) {
             // Model doesn't support tools — remember and retry without them
+            console.warn(
+              `[OllamaContentGenerator] Model ${self.model} does not support tools. Falling back to text-only mode for streaming.`,
+            );
             self.toolsSupported = false;
             // Re-map without tools now that the flag is off
             const remapped = self.mapGeminiParamsToOllama(request);
@@ -278,13 +284,32 @@ export class OllamaContentGenerator implements ContentGenerator {
         let candidatesTokenCount = 0;
         let totalTokenCount = 0;
 
+        let accumulatedText = '';
+        let isPotentiallyJson = false;
+
         // Aggregate tool calls because Ollama streaming might chunk them,
         // but local tools are often returned atomically at the end.
         for await (const chunk of responseStream) {
           const parts: any[] = [];
+
           if (chunk.message?.content) {
-            parts.push({ text: chunk.message.content });
+            accumulatedText += chunk.message.content;
+
+            // Check if this looks like the start of a hallucinated JSON tool call
+            if (
+              accumulatedText.trim().startsWith('{') &&
+              accumulatedText.includes('"name"')
+            ) {
+              isPotentiallyJson = true;
+            }
+
+            // IF it doesn't look like JSON, we can yield it immediately and clear the buffer
+            if (!isPotentiallyJson) {
+              parts.push({ text: accumulatedText });
+              accumulatedText = '';
+            }
           }
+
           if (
             chunk.message?.tool_calls &&
             chunk.message.tool_calls.length > 0
@@ -313,28 +338,69 @@ export class OllamaContentGenerator implements ContentGenerator {
               args: tc.function.arguments,
             })) ?? undefined;
 
-          yield {
-            candidates: [
-              {
-                content: {
-                  role: 'model',
-                  parts,
+          // If this is the final chunk and we buffered text because we suspected JSON
+          if (chunk.done && isPotentiallyJson && accumulatedText.trim()) {
+            try {
+              const parsed = JSON.parse(accumulatedText.trim());
+              if (parsed.name && parsed.arguments) {
+                // Successfully rescued a hallucinated JSON tool call!
+                parts.push({
+                  functionCall: {
+                    name: parsed.name,
+                    args: parsed.arguments,
+                  },
+                });
+                // Nullify the text so we don't emit it. We also update the flat property array.
+                 
+                (
+                  (chunkFunctionCalls as any[]) ||
+                  (chunkFunctionCalls === undefined ? [] : chunkFunctionCalls)
+                ).push({
+                  name: parsed.name,
+                  args: parsed.arguments,
+                });
+                accumulatedText = '';
+              }
+            } catch (e) {
+              // Parsing failed, it was just regular text that happened to contain braces/name
+            }
+
+            // If we didn't parse it as a tool (or parsing failed), yield the buffered text now.
+            if (accumulatedText) {
+              parts.push({ text: accumulatedText });
+              accumulatedText = '';
+            }
+          }
+
+          // Only yield if we have parts or if we are marking the end of the stream
+          if (parts.length > 0 || chunk.done) {
+            yield {
+              candidates: [
+                {
+                  content: {
+                    role: 'model',
+                    parts,
+                  },
+                  // Mark the last chunk with STOP so the turn processor knows we're done
+                  ...(chunk.done ? { finishReason: 'STOP' } : {}),
                 },
-                // Mark the last chunk with STOP so the turn processor knows we're done
-                ...(chunk.done ? { finishReason: 'STOP' } : {}),
+              ],
+              usageMetadata: {
+                promptTokenCount,
+                candidatesTokenCount,
+                totalTokenCount,
               },
-            ],
-            usageMetadata: {
-              promptTokenCount,
-              candidatesTokenCount,
-              totalTokenCount,
-            },
-            // Expose as plain properties (not methods) to match GenAI SDK getter shape
-            text: chunk.message?.content || undefined,
-            functionCalls: chunkFunctionCalls,
-          } as any;
+              // Expose as plain properties (not methods) to match GenAI SDK getter shape
+              text: parts.find((p) => p.text)?.text || undefined,
+              functionCalls: chunkFunctionCalls,
+            } as any;
+          }
         }
       } catch (error) {
+        console.error(
+          `[OllamaContentGenerator] FATAL error in stream with model ${model}:`,
+          error,
+        );
         throw new Error(
           `Ollama generateContentStream failed: ${error instanceof Error ? error.message : String(error)}`,
         );

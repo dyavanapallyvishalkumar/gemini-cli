@@ -111,7 +111,9 @@ async function readFullStructure(
     } catch (error: unknown) {
       if (
         isNodeError(error) &&
-        (error.code === 'EACCES' || error.code === 'ENOENT')
+        (error.code === 'EACCES' ||
+          error.code === 'ENOENT' ||
+          error.code === 'EPERM')
       ) {
         debugLogger.warn(
           `Warning: Could not read directory ${currentPath}: ${error.message}`,
