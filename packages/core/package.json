@@ -22,6 +22,7 @@
   ],
   "dependencies": {
     "@a2a-js/sdk": "^0.3.8",
+    "@anthropic-ai/sdk": "^0.78.0",
     "@google-cloud/logging": "^11.2.1",
     "@google-cloud/opentelemetry-cloud-monitoring-exporter": "^0.21.0",
     "@google-cloud/opentelemetry-cloud-trace-exporter": "^3.0.0",
@@ -65,6 +66,7 @@
     "marked": "^15.0.12",
     "mime": "4.0.7",
     "mnemonist": "^0.40.3",
+    "ollama": "^0.6.3",
     "open": "^10.1.2",
     "picomatch": "^4.0.1",
     "proper-lockfile": "^4.1.2",

@@ -47,7 +47,7 @@ export const LoginWithGoogleRestartDialog = ({
   );
 
   const message =
-    'You have successfully logged in with Google. Gemini CLI needs to be restarted.';
+    'You have successfully logged in with Google. ZOLT CLI needs to be restarted.';
 
   return (
     <Box borderStyle="round" borderColor={theme.status.warning} paddingX={1}>

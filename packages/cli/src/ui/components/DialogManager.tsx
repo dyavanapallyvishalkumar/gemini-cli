@@ -14,6 +14,8 @@ import { SettingsDialog } from './SettingsDialog.js';
 import { AuthInProgress } from '../auth/AuthInProgress.js';
 import { AuthDialog } from '../auth/AuthDialog.js';
 import { ApiAuthDialog } from '../auth/ApiAuthDialog.js';
+import { AnthropicAuthDialog } from '../auth/AnthropicAuthDialog.js';
+import { OllamaModelDialog } from '../auth/OllamaModelDialog.js';
 import { EditorSettingsDialog } from './EditorSettingsDialog.js';
 import { PrivacyNotice } from '../privacy/PrivacyNotice.js';
 import { ProQuotaDialog } from './ProQuotaDialog.js';
@@ -313,6 +315,28 @@ export const DialogManager = ({
           onCancel={uiActions.handleApiKeyCancel}
           error={uiState.authError}
           defaultValue={uiState.apiKeyDefaultValue}
+        />
+      </Box>
+    );
+  }
+  if (uiState.isAwaitingAnthropicApiKeyInput) {
+    return (
+      <Box flexDirection="column">
+        <AnthropicAuthDialog
+          onSubmit={uiActions.handleAnthropicApiKeySubmit}
+          onCancel={uiActions.handleAnthropicApiKeyCancel}
+          error={uiState.authError}
+        />
+      </Box>
+    );
+  }
+  if (uiState.isAwaitingOllamaModelSelection) {
+    return (
+      <Box flexDirection="column">
+        <OllamaModelDialog
+          onSubmit={uiActions.handleOllamaModelSubmit}
+          onCancel={uiActions.handleOllamaModelCancel}
+          error={uiState.authError}
         />
       </Box>
     );

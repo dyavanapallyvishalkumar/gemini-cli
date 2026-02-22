@@ -25,6 +25,8 @@ import { parseCustomHeaders } from '../utils/customHeaderUtils.js';
 import { RecordingContentGenerator } from './recordingContentGenerator.js';
 import { getVersion, resolveModel } from '../../index.js';
 import type { LlmRole } from '../telemetry/llmRole.js';
+import { OllamaContentGenerator } from './ollamaContentGenerator.js';
+import { AnthropicContentGenerator } from './anthropicContentGenerator.js';
 
 /**
  * Interface abstracting the core functionalities for generating content and counting tokens.
@@ -57,6 +59,8 @@ export enum AuthType {
   USE_VERTEX_AI = 'vertex-ai',
   LEGACY_CLOUD_SHELL = 'cloud-shell',
   COMPUTE_ADC = 'compute-default-credentials',
+  USE_OLLAMA = 'ollama-local',
+  USE_ANTHROPIC = 'anthropic-api-key',
 }
 
 /**
@@ -145,9 +149,26 @@ export async function createContentGenerator(
       );
       return new LoggingContentGenerator(fakeGenerator, gcConfig);
     }
+
+    // ZOLT INJECTION: Detect Ollama models
+    const requestedModel = gcConfig.getModel();
+    if (requestedModel.startsWith('ollama/')) {
+      return new LoggingContentGenerator(
+        new OllamaContentGenerator(requestedModel),
+        gcConfig,
+      );
+    }
+    // ZOLT INJECTION: Detect Anthropic models
+    if (requestedModel.startsWith('anthropic/')) {
+      return new LoggingContentGenerator(
+        new AnthropicContentGenerator(requestedModel),
+        gcConfig,
+      );
+    }
+
     const version = await getVersion();
     const model = resolveModel(
-      gcConfig.getModel(),
+      requestedModel,
       config.authType === AuthType.USE_GEMINI ||
         config.authType === AuthType.USE_VERTEX_AI ||
         ((await gcConfig.getGemini31Launched?.()) ?? false),

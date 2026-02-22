@@ -29,8 +29,6 @@ describe('settingsCommand', () => {
 
   it('should have the correct name and description', () => {
     expect(settingsCommand.name).toBe('settings');
-    expect(settingsCommand.description).toBe(
-      'View and edit Gemini CLI settings',
-    );
+    expect(settingsCommand.description).toBe('View and edit ZOLT CLI settings');
   });
 });

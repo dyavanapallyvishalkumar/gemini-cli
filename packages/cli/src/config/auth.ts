@@ -11,7 +11,9 @@ export function validateAuthMethod(authMethod: string): string | null {
   loadEnvironment(loadSettings().merged, process.cwd());
   if (
     authMethod === AuthType.LOGIN_WITH_GOOGLE ||
-    authMethod === AuthType.COMPUTE_ADC
+    authMethod === AuthType.COMPUTE_ADC ||
+    authMethod === AuthType.USE_ANTHROPIC ||
+    authMethod === AuthType.USE_OLLAMA
   ) {
     return null;
   }

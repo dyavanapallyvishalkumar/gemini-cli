@@ -30,6 +30,8 @@ export enum AuthState {
   Updating = 'updating',
   // Waiting for user to input API key
   AwaitingApiKeyInput = 'awaiting_api_key_input',
+  AwaitingAnthropicApiKeyInput = 'awaiting_anthropic_api_key_input',
+  AwaitingOllamaModelSelection = 'awaiting_ollama_model_selection',
   // Successfully authenticated
   Authenticated = 'authenticated',
   // Waiting for the user to restart after a Google login

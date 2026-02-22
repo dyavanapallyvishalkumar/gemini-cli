@@ -104,6 +104,18 @@ export const useAuthCommand = (
         }
       }
 
+      if (authType === AuthType.USE_ANTHROPIC) {
+        if (!process.env['ANTHROPIC_API_KEY']) {
+          setAuthState(AuthState.AwaitingAnthropicApiKeyInput);
+          return;
+        }
+      }
+
+      if (authType === AuthType.USE_OLLAMA) {
+        setAuthState(AuthState.AwaitingOllamaModelSelection);
+        return;
+      }
+
       const error = validateAuthMethodWithSettings(authType, settings);
       if (error) {
         onAuthError(error);

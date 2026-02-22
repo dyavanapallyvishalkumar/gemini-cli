@@ -3,19 +3,21 @@
 exports[`AuthDialog > Snapshots > renders correctly with auth error 1`] = `
 "╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
 │                                                                                                  │
-│ ? Get started                                                                                    │
+│ ?Get started                                                                                     │
 │                                                                                                  │
-│   How would you like to authenticate for this project?                                           │
+│  How would you like to authenticate for this project?                                            │
 │                                                                                                  │
-│   (selected) Login with Google(not selected) Use Gemini API Key(not selected) Vertex AI          │
+│  (selected) Login(not selected) Use (not selected) Use      (not selected) Use   (not selected)  │
+│  with Google     Gemini API Key     Anthropic Claude Model  Local Ollama Model   Vertex AI       │
 │                                                                                                  │
-│   Something went wrong                                                                           │
 │                                                                                                  │
-│   (Use Enter to select)                                                                          │
+│  Something went wrong                                                                            │
 │                                                                                                  │
-│   Terms of Services and Privacy Notice for Gemini CLI                                            │
+│  (Use Enter to select)                                                                           │
 │                                                                                                  │
-│   https://github.com/google-gemini/gemini-cli/blob/main/docs/tos-privacy.md                      │
+│  Terms of Services and Privacy Notice for Gemini CLI                                             │
+│                                                                                                  │
+│  https://github.com/google-gemini/gemini-cli/blob/main/docs/tos-privacy.md                       │
 │                                                                                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 "
@@ -24,17 +26,19 @@ exports[`AuthDialog > Snapshots > renders correctly with auth error 1`] = `
 exports[`AuthDialog > Snapshots > renders correctly with default props 1`] = `
 "╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
 │                                                                                                  │
-│ ? Get started                                                                                    │
+│ ?Get started                                                                                     │
 │                                                                                                  │
-│   How would you like to authenticate for this project?                                           │
+│  How would you like to authenticate for this project?                                            │
 │                                                                                                  │
-│   (selected) Login with Google(not selected) Use Gemini API Key(not selected) Vertex AI          │
+│  (selected) Login(not selected) Use (not selected) Use      (not selected) Use   (not selected)  │
+│  with Google     Gemini API Key     Anthropic Claude Model  Local Ollama Model   Vertex AI       │
 │                                                                                                  │
-│   (Use Enter to select)                                                                          │
 │                                                                                                  │
-│   Terms of Services and Privacy Notice for Gemini CLI                                            │
+│  (Use Enter to select)                                                                           │
 │                                                                                                  │
-│   https://github.com/google-gemini/gemini-cli/blob/main/docs/tos-privacy.md                      │
+│  Terms of Services and Privacy Notice for Gemini CLI                                             │
+│                                                                                                  │
+│  https://github.com/google-gemini/gemini-cli/blob/main/docs/tos-privacy.md                       │
 │                                                                                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 "

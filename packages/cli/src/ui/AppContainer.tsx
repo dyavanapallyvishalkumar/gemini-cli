@@ -774,7 +774,7 @@ export const AppContainer = (props: AppContainerProps) => {
           await runExitCleanup();
           writeToStdout(`
 ----------------------------------------------------------------
-Logging in with Google... Restarting Gemini CLI to continue.
+Logging in with Google... Restarting ZOLT CLI to continue.
 ----------------------------------------------------------------
           `);
           process.exit(RELAUNCH_EXIT_CODE);
@@ -811,6 +811,68 @@ Logging in with Google... Restarting Gemini CLI to continue.
 
   const handleApiKeyCancel = useCallback(() => {
     // Go back to auth method selection
+    setAuthState(AuthState.Updating);
+  }, [setAuthState]);
+
+  const handleAnthropicApiKeySubmit = useCallback(
+    async (apiKey: string) => {
+      try {
+        onAuthError(null);
+        if (!apiKey.trim()) {
+          onAuthError('API key cannot be empty.');
+          return;
+        }
+
+        // We dynamic import because the core might not be available here, but we assume it is since saveApiKey is used above.
+        // Wait, saveApiKey is usually imported directly at the top.
+        // We will just use it. Let's make sure it's imported at the top.
+        const { saveAnthropicApiKey } = await import('@google/gemini-cli-core');
+        await saveAnthropicApiKey(apiKey);
+        // Set the model on the config so createContentGenerator detects the anthropic/ prefix
+        const currentModel = config.getModel();
+        if (!currentModel.startsWith('anthropic/')) {
+          config.setModel('anthropic/claude-3-7-sonnet-20250219');
+        }
+        await config.refreshAuth(AuthType.USE_ANTHROPIC);
+        setAuthState(AuthState.Authenticated);
+      } catch (e) {
+        onAuthError(
+          `Failed to save Anthropic API key: ${e instanceof Error ? e.message : String(e)}`,
+        );
+      }
+    },
+    [setAuthState, onAuthError, config],
+  );
+
+  const handleAnthropicApiKeyCancel = useCallback(() => {
+    setAuthState(AuthState.Updating);
+  }, [setAuthState]);
+
+  const handleOllamaModelSubmit = useCallback(
+    async (model: string) => {
+      try {
+        onAuthError(null);
+        if (!model.trim()) {
+          onAuthError('Ollama model name cannot be empty.');
+          return;
+        }
+
+        const ollamaModel = `ollama/${model}`;
+        settings.setValue(SettingScope.User, 'general.model', ollamaModel);
+        // Set the model on the config so createContentGenerator detects the ollama/ prefix
+        config.setModel(ollamaModel);
+        await config.refreshAuth(AuthType.USE_OLLAMA);
+        setAuthState(AuthState.Authenticated);
+      } catch (e) {
+        onAuthError(
+          `Failed to select Ollama model: ${e instanceof Error ? e.message : String(e)}`,
+        );
+      }
+    },
+    [setAuthState, onAuthError, settings, config],
+  );
+
+  const handleOllamaModelCancel = useCallback(() => {
     setAuthState(AuthState.Updating);
   }, [setAuthState]);
 
@@ -1946,7 +2008,7 @@ Logging in with Google... Restarting Gemini CLI to continue.
       lastTitleRef.current = paddedTitle;
       stdout.write(`\x1b]0;${paddedTitle}\x07`);
     }
-    // Note: We don't need to reset the window title on exit because Gemini CLI is already doing that elsewhere
+    // Note: We don't need to reset the window title on exit because ZOLT CLI is already doing that elsewhere
   }, [
     streamingState,
     thought,
@@ -2218,6 +2280,10 @@ Logging in with Google... Restarting Gemini CLI to continue.
       authError,
       isAuthDialogOpen,
       isAwaitingApiKeyInput: authState === AuthState.AwaitingApiKeyInput,
+      isAwaitingAnthropicApiKeyInput:
+        authState === AuthState.AwaitingAnthropicApiKeyInput,
+      isAwaitingOllamaModelSelection:
+        authState === AuthState.AwaitingOllamaModelSelection,
       apiKeyDefaultValue,
       editorError,
       isEditorDialogOpen,
@@ -2499,6 +2565,10 @@ Logging in with Google... Restarting Gemini CLI to continue.
       popAllMessages,
       handleApiKeySubmit,
       handleApiKeyCancel,
+      handleAnthropicApiKeySubmit,
+      handleAnthropicApiKeyCancel,
+      handleOllamaModelSubmit,
+      handleOllamaModelCancel,
       setBannerVisible,
       setShortcutsHelpVisible,
       setCleanUiDetailsVisible,
@@ -2584,6 +2654,10 @@ Logging in with Google... Restarting Gemini CLI to continue.
       popAllMessages,
       handleApiKeySubmit,
       handleApiKeyCancel,
+      handleAnthropicApiKeySubmit,
+      handleAnthropicApiKeyCancel,
+      handleOllamaModelSubmit,
+      handleOllamaModelCancel,
       setBannerVisible,
       setShortcutsHelpVisible,
       setCleanUiDetailsVisible,

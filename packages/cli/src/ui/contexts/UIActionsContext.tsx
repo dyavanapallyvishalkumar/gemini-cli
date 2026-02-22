@@ -70,6 +70,10 @@ export interface UIActions {
   popAllMessages: () => string | undefined;
   handleApiKeySubmit: (apiKey: string) => Promise<void>;
   handleApiKeyCancel: () => void;
+  handleAnthropicApiKeySubmit: (apiKey: string) => Promise<void>;
+  handleAnthropicApiKeyCancel: () => void;
+  handleOllamaModelSubmit: (model: string) => Promise<void>;
+  handleOllamaModelCancel: () => void;
   setBannerVisible: (visible: boolean) => void;
   setShortcutsHelpVisible: (visible: boolean) => void;
   setCleanUiDetailsVisible: (visible: boolean) => void;

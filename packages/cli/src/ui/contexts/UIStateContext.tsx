@@ -76,6 +76,8 @@ export interface UIState {
   authError: string | null;
   isAuthDialogOpen: boolean;
   isAwaitingApiKeyInput: boolean;
+  isAwaitingAnthropicApiKeyInput: boolean;
+  isAwaitingOllamaModelSelection: boolean;
   apiKeyDefaultValue?: string;
   editorError: string | null;
   isEditorDialogOpen: boolean;

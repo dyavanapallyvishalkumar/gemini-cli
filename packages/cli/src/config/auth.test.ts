@@ -41,6 +41,18 @@ describe('validateAuthMethod', () => {
       expected: null,
     },
     {
+      description: 'should return null for USE_ANTHROPIC',
+      authType: AuthType.USE_ANTHROPIC,
+      envs: {},
+      expected: null,
+    },
+    {
+      description: 'should return null for USE_OLLAMA',
+      authType: AuthType.USE_OLLAMA,
+      envs: {},
+      expected: null,
+    },
+    {
       description: 'should return null for USE_GEMINI if GEMINI_API_KEY is set',
       authType: AuthType.USE_GEMINI,
       envs: { GEMINI_API_KEY: 'test-key' },

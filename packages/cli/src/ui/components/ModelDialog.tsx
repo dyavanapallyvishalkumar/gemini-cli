@@ -82,13 +82,22 @@ export function ModelDialog({ onClose }: ModelDialogProps): React.JSX.Element {
     { isActive: true },
   );
 
+  // Check if the current model is a custom (non-Gemini) model
+  const isCustomModel = useMemo(() => {
+    if (!preferredModel) return false;
+    return (
+      preferredModel.startsWith('ollama/') ||
+      preferredModel.startsWith('anthropic/')
+    );
+  }, [preferredModel]);
+
   const mainOptions = useMemo(() => {
     const list = [
       {
         value: DEFAULT_GEMINI_MODEL_AUTO,
         title: getDisplayString(DEFAULT_GEMINI_MODEL_AUTO),
         description:
-          'Let Gemini CLI decide the best model for the task: gemini-2.5-pro, gemini-2.5-flash',
+          'Let ZOLT CLI decide the best model for the task: gemini-2.5-pro, gemini-2.5-flash',
         key: DEFAULT_GEMINI_MODEL_AUTO,
       },
       {
@@ -106,13 +115,30 @@ export function ModelDialog({ onClose }: ModelDialogProps): React.JSX.Element {
         value: PREVIEW_GEMINI_MODEL_AUTO,
         title: getDisplayString(PREVIEW_GEMINI_MODEL_AUTO),
         description: useGemini31
-          ? 'Let Gemini CLI decide the best model for the task: gemini-3.1-pro, gemini-3-flash'
-          : 'Let Gemini CLI decide the best model for the task: gemini-3-pro, gemini-3-flash',
+          ? 'Let ZOLT CLI decide the best model for the task: gemini-3.1-pro, gemini-3-flash'
+          : 'Let ZOLT CLI decide the best model for the task: gemini-3-pro, gemini-3-flash',
         key: PREVIEW_GEMINI_MODEL_AUTO,
       });
     }
+
+    // Add the current custom model (e.g., ollama/llama3) at the top
+    if (isCustomModel) {
+      list.unshift({
+        value: preferredModel,
+        title: `${preferredModel} (current)`,
+        description: `Currently active local model`,
+        key: preferredModel,
+      });
+    }
+
     return list;
-  }, [shouldShowPreviewModels, manualModelSelected, useGemini31]);
+  }, [
+    shouldShowPreviewModels,
+    manualModelSelected,
+    useGemini31,
+    isCustomModel,
+    preferredModel,
+  ]);
 
   const manualOptions = useMemo(() => {
     const list = [
@@ -222,7 +248,7 @@ export function ModelDialog({ onClose }: ModelDialogProps): React.JSX.Element {
       </Box>
       <Box marginTop={1} flexDirection="column">
         <Text color={theme.text.secondary}>
-          {'> To use a specific Gemini model on startup, use the --model flag.'}
+          {'> To use a specific model on startup, use the --model flag.'}
         </Text>
       </Box>
       <Box marginTop={1} flexDirection="column">

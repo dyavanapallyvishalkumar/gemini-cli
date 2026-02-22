@@ -151,7 +151,7 @@ describe('<HistoryItemDisplay />', () => {
       <HistoryItemDisplay {...baseItem} item={item} />,
     );
     await waitUntilReady();
-    expect(lastFrame()).toContain('About Gemini CLI');
+    expect(lastFrame()).toContain('About ZOLT CLI');
     unmount();
   });
 

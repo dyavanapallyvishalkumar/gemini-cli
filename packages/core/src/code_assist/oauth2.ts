@@ -246,7 +246,7 @@ async function initOauthClient(
       }
     } finally {
       exitAlternateScreen();
-      // If this was triggered from an active Gemini CLI TUI this event ensures
+      // If this was triggered from an active ZOLT CLI TUI this event ensures
       // the TUI will re-initialize the terminal state just like it will when
       // another editor like VIM may have modified the buffer of settings.
       coreEvents.emit(CoreEvent.ExternalEditorClosed);

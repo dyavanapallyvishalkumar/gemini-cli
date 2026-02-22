@@ -72,6 +72,16 @@ export function AuthDialog({
       key: AuthType.USE_GEMINI,
     },
     {
+      label: 'Use Anthropic Claude Model',
+      value: AuthType.USE_ANTHROPIC,
+      key: AuthType.USE_ANTHROPIC,
+    },
+    {
+      label: 'Use Local Ollama Model',
+      value: AuthType.USE_OLLAMA,
+      key: AuthType.USE_OLLAMA,
+    },
+    {
       label: 'Vertex AI',
       value: AuthType.USE_VERTEX_AI,
       key: AuthType.USE_VERTEX_AI,
@@ -200,7 +210,7 @@ export function AuthDialog({
         alignItems="flex-start"
       >
         <Text color={theme.text.primary}>
-          Logging in with Google... Restarting Gemini CLI to continue.
+          Logging in with Google... Restarting ZOLT CLI to continue.
         </Text>
       </Box>
     );
@@ -245,7 +255,7 @@ export function AuthDialog({
         </Box>
         <Box marginTop={1}>
           <Text color={theme.text.primary}>
-            Terms of Services and Privacy Notice for Gemini CLI
+            Terms of Services and Privacy Notice for ZOLT CLI
           </Text>
         </Box>
         <Box marginTop={1}>

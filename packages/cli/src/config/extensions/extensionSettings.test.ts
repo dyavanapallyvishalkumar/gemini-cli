@@ -216,7 +216,7 @@ describe('extensionSettings', () => {
         SENSITIVE_VAR: 'secret',
       };
       const userKeychain = new KeychainTokenStorage(
-        `Gemini CLI Extensions test-ext 12345`,
+        `ZOLT CLI Extensions test-ext 12345`,
       );
       await userKeychain.setSecret('SENSITIVE_VAR', 'secret');
       const envPath = path.join(extensionDir, '.env');
@@ -256,7 +256,7 @@ describe('extensionSettings', () => {
       };
       const previousSettings = { SENSITIVE_VAR: 'secret' };
       const userKeychain = new KeychainTokenStorage(
-        `Gemini CLI Extensions test-ext 12345`,
+        `ZOLT CLI Extensions test-ext 12345`,
       );
       await userKeychain.setSecret('SENSITIVE_VAR', 'secret');
 
@@ -422,7 +422,7 @@ describe('extensionSettings', () => {
       );
 
       const userKeychain = new KeychainTokenStorage(
-        `Gemini CLI Extensions test-ext 12345`,
+        `ZOLT CLI Extensions test-ext 12345`,
       );
       expect(await userKeychain.getSecret('SENSITIVE_VAR')).toBeNull();
     });
@@ -550,7 +550,7 @@ describe('extensionSettings', () => {
       const userEnvPath = path.join(extensionDir, EXTENSION_SETTINGS_FILENAME);
       await fsPromises.writeFile(userEnvPath, 'VAR1=user-value1');
       const userKeychain = new KeychainTokenStorage(
-        `Gemini CLI Extensions test-ext 12345`,
+        `ZOLT CLI Extensions test-ext 12345`,
       );
       await userKeychain.setSecret('SENSITIVE_VAR', 'user-secret');
 
@@ -574,7 +574,7 @@ describe('extensionSettings', () => {
       );
       await fsPromises.writeFile(workspaceEnvPath, 'VAR1=workspace-value1');
       const workspaceKeychain = new KeychainTokenStorage(
-        `Gemini CLI Extensions test-ext 12345 ${tempWorkspaceDir}`,
+        `ZOLT CLI Extensions test-ext 12345 ${tempWorkspaceDir}`,
       );
       await workspaceKeychain.setSecret('SENSITIVE_VAR', 'workspace-secret');
 
@@ -612,7 +612,7 @@ describe('extensionSettings', () => {
         'VAR1=user-value1\nVAR3=user-value3',
       );
       const userKeychain = new KeychainTokenStorage(
-        `Gemini CLI Extensions test-ext ${extensionId}`,
+        `ZOLT CLI Extensions test-ext ${extensionId}`,
       );
       await userKeychain.setSecret('VAR2', 'user-secret2');
 
@@ -623,7 +623,7 @@ describe('extensionSettings', () => {
       );
       await fsPromises.writeFile(workspaceEnvPath, 'VAR1=workspace-value1');
       const workspaceKeychain = new KeychainTokenStorage(
-        `Gemini CLI Extensions test-ext ${extensionId} ${tempWorkspaceDir}`,
+        `ZOLT CLI Extensions test-ext ${extensionId} ${tempWorkspaceDir}`,
       );
       await workspaceKeychain.setSecret('VAR2', 'workspace-secret2');
 
@@ -656,7 +656,7 @@ describe('extensionSettings', () => {
       const userEnvPath = path.join(extensionDir, '.env');
       await fsPromises.writeFile(userEnvPath, 'VAR1=value1\n');
       const userKeychain = new KeychainTokenStorage(
-        `Gemini CLI Extensions test-ext 12345`,
+        `ZOLT CLI Extensions test-ext 12345`,
       );
       await userKeychain.setSecret('VAR2', 'value2');
       mockRequestSetting.mockClear();
@@ -709,7 +709,7 @@ describe('extensionSettings', () => {
       );
 
       const userKeychain = new KeychainTokenStorage(
-        `Gemini CLI Extensions test-ext 12345`,
+        `ZOLT CLI Extensions test-ext 12345`,
       );
       expect(await userKeychain.getSecret('VAR2')).toBe('new-value2');
     });
@@ -727,7 +727,7 @@ describe('extensionSettings', () => {
       );
 
       const workspaceKeychain = new KeychainTokenStorage(
-        `Gemini CLI Extensions test-ext 12345 ${tempWorkspaceDir}`,
+        `ZOLT CLI Extensions test-ext 12345 ${tempWorkspaceDir}`,
       );
       expect(await workspaceKeychain.getSecret('VAR2')).toBe(
         'new-workspace-secret',
@@ -781,7 +781,7 @@ describe('extensionSettings', () => {
       );
 
       const userKeychain = new KeychainTokenStorage(
-        `Gemini CLI Extensions test-ext 12345`,
+        `ZOLT CLI Extensions test-ext 12345`,
       );
       expect(await userKeychain.getSecret('VAR2')).toBeNull();
     });
@@ -807,7 +807,7 @@ describe('extensionSettings', () => {
       mockRequestSetting.mockResolvedValue('');
       // Ensure it doesn't exist first
       const userKeychain = new KeychainTokenStorage(
-        `Gemini CLI Extensions test-ext 12345`,
+        `ZOLT CLI Extensions test-ext 12345`,
       );
       await userKeychain.deleteSecret('VAR2');
 

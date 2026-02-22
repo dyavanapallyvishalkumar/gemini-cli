@@ -17,6 +17,6 @@ export const SessionSummaryDisplay: React.FC<SessionSummaryDisplayProps> = ({
   <StatsDisplay
     title="Agent powering down. Goodbye!"
     duration={duration}
-    footer="Tip: Resume a previous session using gemini --resume or /resume"
+    footer="Tip: Resume a previous session using zolt --resume or /resume"
   />
 );

@@ -71,3 +71,56 @@ export async function clearApiKey(): Promise<void> {
     debugLogger.error('Failed to clear API key from storage:', error);
   }
 }
+
+const ANTHROPIC_API_KEY_ENTRY = 'anthropic-api-key';
+
+export async function loadAnthropicApiKey(): Promise<string | null> {
+  try {
+    const credentials = await storage.getCredentials(ANTHROPIC_API_KEY_ENTRY);
+
+    if (credentials?.token?.accessToken) {
+      return credentials.token.accessToken;
+    }
+
+    return null;
+  } catch (error: unknown) {
+    // Log other errors but don't crash, just return null so user can re-enter key
+    debugLogger.error('Failed to load Anthropic API key from storage:', error);
+    return null;
+  }
+}
+
+export async function saveAnthropicApiKey(
+  apiKey: string | null | undefined,
+): Promise<void> {
+  if (!apiKey || apiKey.trim() === '') {
+    try {
+      await storage.deleteCredentials(ANTHROPIC_API_KEY_ENTRY);
+    } catch (error: unknown) {
+      debugLogger.warn(
+        'Failed to delete Anthropic API key from storage:',
+        error,
+      );
+    }
+    return;
+  }
+
+  const credentials: OAuthCredentials = {
+    serverName: ANTHROPIC_API_KEY_ENTRY,
+    token: {
+      accessToken: apiKey,
+      tokenType: 'ApiKey',
+    },
+    updatedAt: Date.now(),
+  };
+
+  await storage.setCredentials(credentials);
+}
+
+export async function clearAnthropicApiKey(): Promise<void> {
+  try {
+    await storage.deleteCredentials(ANTHROPIC_API_KEY_ENTRY);
+  } catch (error: unknown) {
+    debugLogger.error('Failed to clear Anthropic API key from storage:', error);
+  }
+}
